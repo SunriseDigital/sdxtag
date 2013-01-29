@@ -1,0 +1,102 @@
+.sdx-tag *{
+	padding: 0;
+	margin: 0;
+}
+
+.sdx-tag {
+	border: 1px solid #aaa;
+	padding: 4px 0;
+	zoom: 1;
+}
+
+.sdx-tag 
+
+
+.sdx-tag .tags{
+	
+	zoom: 1;
+}
+
+.sdx-tag:after {
+  content: ".";
+  display: block;
+  clear: both;
+  height: 0;
+  visibility: hidden;
+}
+
+.sdx-tag .tags:after {
+  content: ".";
+  display: block;
+  clear: both;
+  height: 0;
+  visibility: hidden;
+}
+
+.sdx-tag .tags{
+	float: left;
+	width: 90%;
+}
+
+.sdx-tag .suggest-button{
+	float: right;
+}
+
+.sdx-tag .tags li{
+	list-style: none;
+	line-height: 20px;
+	float: left;
+	margin-top: 5px;
+}
+
+.sdx-tag .tags li .value, .sdx-tag .tags li .delete {
+	display: block;
+	float: left;	
+}
+
+.sdx-tag .tags li .delete{
+	padding: 0 5px;
+	cursor: pointer;
+}
+
+.sdx-tag .tags li.tag{
+	font-size: 16px;
+	padding: 1px 0 1px 5px;
+	margin-right: 5px;
+	border: 1px solid #aaa;
+	background-color:#eee;
+}
+
+.sdx-tag .tags li.new-tag input, .sdx-tag .tags li.new-tag .measure{
+	font-size: 16px;
+}
+
+.sdx-tag .tags li.new-tag input{
+	outline: none;
+	border: none;
+	height: 20px;
+	line-height: 20px;
+}
+
+.sdx-tag .tags li.new-tag input::-ms-clear {
+    display: none;
+}
+
+
+/* Suggestion */
+.sdx-tag .suggestion{
+	border: 1px solid #aaa;
+	border-top: none;
+	padding: 0;
+}
+
+.sdx-tag .suggestion li{
+	padding: 2px 5px;
+	list-style: none;
+	cursor: pointer;
+}
+
+.sdx-tag .suggestion li.selected{
+
+	background-color:#ccF;	
+}
