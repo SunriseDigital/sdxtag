@@ -95,7 +95,7 @@
 	                        event.which == $.ui.keyCode.TAB &&
 	                        self._input.val() !== ''
 	                    ) 
-	                ) {
+	                ){
 	                    // 入力がない状態でエンターを押したらサブミット(デフォルトのアクションをする)する
 	                    if (!(event.which === $.ui.keyCode.ENTER && self._input.val() === '')) 
 	                    {
@@ -234,14 +234,16 @@
 				var value = self._getValue(line);
 				
 				var key = $.inArray(value, self._tag_values);
-				if(key !== -1)
+				if(~key)
 				{
-					delete self._tag_values[key];
+					self._tag_values.splice(key, 1);
 				}
 				
 				line.fadeOut('fast').hide.apply(line, ['blind', {direction: 'horizontal'}, 'fast', function(){
 					line.remove();
 					self._updateSuggestion();
+					self._tagDidChange();
+					
 				}]).dequeue();
 			},
 			_getValue: function(line)
