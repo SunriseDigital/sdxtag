@@ -17,7 +17,7 @@
 				self._force_show_suggestion = false;
 				
 				//member
-				self._suggest_values = ["test", 'hoge'];
+				self._suggest_values = [];
 				self._tag_values = [];
 				
 				
@@ -36,6 +36,22 @@
 				
 				//input hidden
 				self._submitFieldTpl = '<input type="hidden" name="'+self.options.fieldName+'" value="" />';
+				
+				//checking mouse move
+				self._mouse_moving = false;
+				$('body').bind('mousemove.sdxTag', function(event){
+					self._mouse_moving = true;
+				});
+				
+				setInterval(function(){
+					
+					if(self._mouse_moving)
+					{
+						self._mouse_moving = false;
+					}
+					
+				}, 100);
+				
 				
 				self._input.width(min_width);
 				self._input.sdxAutoGrowInput({
@@ -115,17 +131,32 @@
 	                }
 	                else if(event.which === $.ui.keyCode.DOWN)
 	                {
+	                	
 	                	//suggestionが表示されてなかったら表示する
 	                	if(!self._force_show_suggestion)
 	                	{
 	                		self._showSuggestion();
 	                	}
 	                	
-	                	self._selectNextSuggestion();
+	                	var target_li = self._selectNextSuggestion();
+	                	
+	                	var wrapper_top = self._suggestion.offset().top;
+	                	var scroll_limit = self._suggestion.height() - target_li.height();
+	                	
+	                	if(target_li && target_li.offset().top - wrapper_top >= scroll_limit)
+	                	{
+	                		self._suggestion.scrollTop(self._suggestion.scrollTop() + target_li.outerHeight());
+	                	}
 	                }
 	                else if(event.which === $.ui.keyCode.UP)
 	                {
-	                	self._selectPrevSuggestion();
+	                	var target_li = self._selectPrevSuggestion();
+	                	
+	                	var wrapper_top = self._suggestion.offset().top;
+	                	if(target_li && target_li.offset().top - wrapper_top < 0)
+	                	{
+	                		self._suggestion.scrollTop(self._suggestion.scrollTop() - target_li.outerHeight());
+	                	}
 	                }
 	                else if(event.which === $.ui.keyCode.BACKSPACE && self._input.val() === '')
 	                {
@@ -135,10 +166,15 @@
 				});
 			},
 			showSuggestion: function()
-			{
+			{	
 				self._force_show_suggestion = true;
 	        	self._updateSuggestion();
 	        	self._showSuggestion();
+			},
+			setSuggestValues: function(values)
+			{
+				self._suggest_values = values;
+				self._updateSuggestion();
 			},
 			hideSuggestion: function()
 			{
@@ -210,6 +246,7 @@
 				{
 					word_li.removeClass('selected');
 					target_li.addClass('selected');
+					return target_li; 
 				}
 			},
 			_selectPrevSuggestion: function()
@@ -221,6 +258,7 @@
 				{
 					word_li.removeClass('selected');
 					target_li.addClass('selected');
+					return target_li;
 				}
 				else
 				{
@@ -265,7 +303,7 @@
 				}, 10);
 			},
 			_showSuggestion:function(){
-				if(self._suggestion.children().length > 0)
+				if(self._suggestion.is(':hidden') && self._suggestion.children().length > 0)
 				{
 					self._suggestion.show();
 					var offset = self.element.offset();
@@ -288,8 +326,12 @@
 						var li = $('<li class="word">'+word+'</li>');
 						self._suggestion.append(li);
 						li.bind('mouseover.sdxTag', function(){
-							self._suggestion.find('.selected').removeClass('selected');
-							$(this).addClass('selected');
+							//マウスオーバーしたままキーボードの上下で移動するとおかしな挙動になるのを防ぐため
+							if(self._mouse_moving)
+							{
+								self._suggestion.find('.selected').removeClass('selected');
+								$(this).addClass('selected');
+							}
 						}).bind('click.sdxTag', function(){
 							var li = $(this);
 							li.addClass('selected');
@@ -306,6 +348,7 @@
 			},
 			_hideSuggestion: function()
 			{
+				self._suggestion.scrollTop(0);
 				self._suggestion.hide();
 			},
 			destroy: function()

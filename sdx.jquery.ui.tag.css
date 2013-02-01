@@ -88,6 +88,9 @@
 	border: 1px solid #aaa;
 	border-top: none;
 	padding: 0;
+	overflow-y:auto; /* ダメandroidはスクロールするコンテンツに対応してません */
+	-webkit-overflow-scrolling: touch; /* iphoneでスクロールバーを出す */
+	height: 300px;
 }
 
 .sdx-tag .suggestion li{
