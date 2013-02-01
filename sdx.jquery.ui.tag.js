@@ -141,7 +141,7 @@
 	                	var target_li = self._selectNextSuggestion();
 	                	
 	                	var wrapper_top = self._suggestion.offset().top;
-	                	var scroll_limit = self._suggestion.height() - target_li.height();
+	                	var scroll_limit = self._suggestion.height() - (target_li ? target_li.height() : 10);
 	                	
 	                	if(target_li && target_li.offset().top - wrapper_top >= scroll_limit)
 	                	{
@@ -185,7 +185,7 @@
 			{
 				return $.merge([], self._tag_values);
 			},
-			addTag:function(value)
+			addTag:function(value, fireChangeEvent)
 			{
 				self.hideSuggestion();
 				
@@ -216,14 +216,21 @@
 				
 				self._focusInput();
 				
-				self._tagDidChange();
+				if(fireChangeEvent)
+				{
+					self._tagDidChange();
+				}
 			},
-			removeAll: function()
+			removeAll: function(fireChangeEvent)
 			{
 				self._tag_values = [];
 				self._list.children('.tag').remove();
 				self._updateSuggestion();
-				self._tagDidChange();
+				
+				if(fireChangeEvent)
+				{
+					self._tagDidChange();
+				}
 			},
 			_tagDidChange: function()
 			{
@@ -337,7 +344,7 @@
 							li.addClass('selected');
 							
 							setTimeout(function(){
-								self.addTag(li.text());
+								self.addTag(li.text(), true);
 								self._hideSuggestion();
 							}, 0);
 							
