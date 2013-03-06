@@ -133,11 +133,11 @@
 	                    var selected = self._suggestion.find('.selected');
 	                    if(event.which === $.ui.keyCode.ENTER && selected.length != 0)
 	                    {
-	                    	self.addTag(selected.text());
+	                    	self.addTag(selected.text(), true);
 	                    }
 	                    else if(self._input.val() !== '')
 	                    {
-	                    	self.addTag(self._input.val());
+	                    	self.addTag(self._input.val(), true);
 	                    }
 	                }
 	                else if(event.which === $.ui.keyCode.DOWN)
