@@ -60,15 +60,10 @@
 }
 
 .sdx-tag .tags li.tag{
-	font-size: 16px;
 	padding: 1px 0 1px 5px;
 	margin-right: 5px;
 	border: 1px solid #aaa;
 	background-color:#eee;
-}
-
-.sdx-tag .tags li.new-tag input, .sdx-tag .tags li.new-tag .measure{
-	font-size: 16px;
 }
 
 .sdx-tag .tags li.new-tag input{

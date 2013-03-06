@@ -1,11 +1,13 @@
 (function($){
 	(function($){
 		var self;
+		var entry_failed = false;
 		$.widget('ui.sdxTag', {
 			options: {
 				deleteHtml:'x',
 				suggestButtonHtml: '▼',
-				fieldName: 'tag[]'
+				fieldName: 'tag[]',
+				maxCharCount: 10
 			},
 			_create: function()
 			{
@@ -25,15 +27,24 @@
 				self._list = $('<ul class="tags"></ul>');
 				self.element.append(self._list);
 				
-				//seggestion button
-				self._suggest_button = $('<div class="suggest-button">'+self.options.suggestButtonHtml+'</div>');
-				self.element.append(self._suggest_button);
-				
 				//input text
 				self._inputLine = $('<li class="new-tag"></li>');
 				self._input = $('<input type="text" value="" />');
+				self._input.on('keyup change paste focus', function(){
+					var $this = $(this);
+					var len = $this.val().length;
+					var rest_count = self.options.maxCharCount - len
+					entry_failed = rest_count < 0;
+					self.element.toggleClass('tag-char-over-count', rest_count < 0);
+					if(entry_failed) self._hideSuggestion();
+				});
 				self._list.append(self._inputLine.append(self._input));
+				self.element.append($('<div class="tags-count-message">'+self.options.maxCharCount+'文字までが入力可能です。</div>'));
 				
+				//seggestion button
+				self._suggest_button = $('<div class="suggest-button">'+self.options.suggestButtonHtml+'</div>');
+				self.element.append(self._suggest_button);
+
 				//input hidden
 				self._submitFieldTpl = '<input type="hidden" name="'+self.options.fieldName+'" value="" />';
 				
@@ -187,38 +198,40 @@
 			},
 			addTag:function(value, fireChangeEvent)
 			{
-				self.hideSuggestion();
-				
-				var value = value.split(',').join("");
-				if($.inArray(value, self._tag_values) == -1)
+				if(!entry_failed)
 				{
-					var tag_delete = $('<span class="delete">'+self.options.deleteHtml+'</span>');
-					var new_line = $('<li class="tag"><span class="value">'+value+'</span></li>');
-					var inputHidden = $(self._submitFieldTpl);
+					self.hideSuggestion();
+					var value = value.split(',').join("");
+					if($.inArray(value, self._tag_values) == -1)
+					{
+						var tag_delete = $('<span class="delete">'+self.options.deleteHtml+'</span>');
+						var new_line = $('<li class="tag"><span class="value">'+value+'</span></li>');
+						var inputHidden = $(self._submitFieldTpl);
+						
+						self._list
+							.append(new_line)
+							.append(self._inputLine)
+							;
+						
+						new_line.append(tag_delete);
+						tag_delete.bind('click.sdxTag', function(){
+							self._removeTag(new_line);
+						});
+						
+						new_line.append(inputHidden);
+						inputHidden.val(value);
+						
+						self._tag_values.push(value);
+					}
 					
-					self._list
-						.append(new_line)
-						.append(self._inputLine)
-						;
+					self._input.val("");
 					
-					new_line.append(tag_delete);
-					tag_delete.bind('click.sdxTag', function(){
-						self._removeTag(new_line);
-					});
+					self._focusInput();
 					
-					new_line.append(inputHidden);
-					inputHidden.val(value);
-					
-					self._tag_values.push(value);
-				}
-				
-				self._input.val("");
-				
-				self._focusInput();
-				
-				if(fireChangeEvent)
-				{
-					self._tagDidChange();
+					if(fireChangeEvent)
+					{
+						self._tagDidChange();
+					}
 				}
 			},
 			removeAll: function(fireChangeEvent)
@@ -226,6 +239,9 @@
 				self._tag_values = [];
 				self._list.children('.tag').remove();
 				self._updateSuggestion();
+				self.element.removeClass('tag-char-over-count');
+				self.element.find('.new-tag').find('input').val('');
+				entry_failed = false;
 				
 				if(fireChangeEvent)
 				{
@@ -444,4 +460,5 @@
 		};
 	
 	})(jQuery);
+
 })(jQuery);
