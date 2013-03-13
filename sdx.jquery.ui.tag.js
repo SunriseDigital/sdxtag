@@ -305,7 +305,7 @@
 					self._updateSuggestion();
 					self._tagDidChange();
 					
-				}]).dequeue();
+				}]);
 			},
 			_getValue: function(line)
 			{
