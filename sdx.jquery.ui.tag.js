@@ -17,6 +17,7 @@
 				
 				//flag
 				self._force_show_suggestion = false;
+				self._add_tag_flag = false;
 				
 				//member
 				self._suggest_values = [];
@@ -137,6 +138,8 @@
 	                    }
 	                    else if(self._input.val() !== '')
 	                    {
+							//追加フラグを立てる
+	                    	self._add_tag_flag = true;
 	                    	self.addTag(self._input.val(), true);
 	                    }
 	                }
@@ -175,6 +178,19 @@
 	                }
 	                
 				});
+				
+				self._input.bind('blur.sdxTag', function(event){
+					var val = this.value;
+					if (val === '' || self._add_tag_flag === true)
+					{
+						return;
+					}
+
+					if($.inArray(val, self._tag_values) == -1)
+					{
+						self.addTag(this.value, true, true);
+					}
+				});
 			},
 			showSuggestion: function()
 			{	
@@ -196,7 +212,7 @@
 			{
 				return $.merge([], self._tag_values);
 			},
-			addTag:function(value, fireChangeEvent)
+			addTag:function(value, fireChangeEvent, disableFocus)
 			{
 				if(!entry_failed)
 				{
@@ -226,12 +242,19 @@
 					
 					self._input.val("");
 					
-					self._focusInput();
+					var df = disableFocus ? true : false;
+					if (!df)
+					{
+						self._focusInput();
+					}
 					
 					if(fireChangeEvent)
 					{
 						self._tagDidChange();
 					}
+					
+					//追加フラグを元に戻す
+					self._add_tag_flag = false;
 				}
 			},
 			removeAll: function(fireChangeEvent)
