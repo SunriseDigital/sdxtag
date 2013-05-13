@@ -43,7 +43,7 @@
 				self.element.append($('<div class="tags-count-message">'+self.options.maxCharCount+'文字までが入力可能です。</div>'));
 				
 				//seggestion button
-				self._suggest_button = $('<div class="suggest-button">'+self.options.suggestButtonHtml+'</div>');
+				self._suggest_button = $('<div class="suggest-button ' + (self._suggest_values.length == 0 ? "hide" : "") + '">'+self.options.suggestButtonHtml+'</div>');
 				self.element.append(self._suggest_button);
 
 				//input hidden
@@ -207,6 +207,7 @@
 			{
 				self._force_show_suggestion = false;
 	        	self._hideSuggestion();
+				self._updateSuggestion();
 			},
 			getAllTagValues:function()
 			{
@@ -390,6 +391,15 @@
 							
 						});
 					}
+				}
+				
+				if (self._suggest_values.length != 0)
+				{
+					self._suggest_button.removeClass('hide');
+				}
+				else
+				{
+					self._suggest_button.addClass('hide');
 				}
 			},
 			_hideSuggestion: function()

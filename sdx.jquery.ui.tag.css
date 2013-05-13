@@ -40,7 +40,13 @@
 
 .sdx-tag .suggest-button{
 	float: right;
+	color: #000;
 }
+
+.sdx-tag .suggest-button.hide{
+	color: #FFF;
+}
+
 
 .sdx-tag .tags li{
 	list-style: none;
